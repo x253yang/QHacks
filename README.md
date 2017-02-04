@@ -26,3 +26,7 @@ For test.py and data.py, inputs are invalid if they contain a non-alphanumeric c
 Running Flask app
 Open up repo:
 python app.py 
+
+---
+
+pygalTest.py: plots graph using pygal - graphing.html shows how to embed the graph
