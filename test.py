@@ -5,6 +5,27 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from nltk.corpus import sentiwordnet as swn
 import numpy as np
+import sys, getopt
+
+print('Number of arguments:', len(sys.argv), 'arguments.')
+print('Argument List:', str(sys.argv))
+
+subreddit = ""
+user = ""
+lim = 100
+
+i = 1
+while (i+1 < len(sys.argv)):
+    if sys.argv[i] == '-s':
+        subreddit = sys.argv[i + 1]
+        i = i + 1
+    elif sys.argv[i] == '-u':
+        user = sys.argv[i + 1]
+        i = i + 1
+    elif sys.argv[i] == '-l':
+	    lim = sys.argv[i + 1]
+    else:
+        continue
 
 conn = sqlite3.connect('database.sqlite')
 
@@ -26,7 +47,25 @@ def get_objective_score(sentiments):
         return sentiments[0].obj_score()
     return 0
 
-df = pd.read_sql("SELECT score, body, subreddit from May2015 where LENGTH(body) > 30 AND LENGTH(body) < 100 LIMIT 100",conn)
+print(subreddit)
+
+query_string = 'SELECT score, body, subreddit from May2015 where LENGTH(body) > 0'
+if subreddit != "":
+    query_string += ' and subreddit = "'+subreddit+'"'
+
+if user != "":
+    query_string += ' and user = "' + user + '"'
+
+query_string += ' LIMIT"' + str(lim) + '"'
+query_string += ' COLLATE NOCASE'
+
+print(query_string)
+
+df = pd.read_sql(
+    query_string,
+    conn
+)
+
 #for row in df:
 #   print(row[0], row[1], row[2], "\n")
 
@@ -37,7 +76,6 @@ content_summary = pd.DataFrame()
 pos_content = []
 neg_content = []
 obj_content = []
-sub_content = []
 
 # get the average score for all words in the comments
 for string in df['body'].values:
