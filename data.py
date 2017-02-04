@@ -3,9 +3,10 @@
 import sqlite3
 import pandas as pd
 import matplotlib.pyplot as plt
-from nltk.corpus import sentiwordnet as swn
 import numpy as np
 import sys, getopt
+import indicoio
+indicoio.config.api_key = 'db91e10ba18babcf6e5e5209a5f0ab6f'
 
 subreddit = ""
 author = ""
@@ -39,28 +40,14 @@ while (i < len(sys.argv)):
 
 conn = sqlite3.connect('../database.sqlite')
 
+def get_sent(x):
+    return indicoio.sentiment(x)
 
-def get_scores(x):
-    return list(swn.senti_synsets(x))
-
-
-def get_positive_score(sentiments):
-    if len(sentiments) > 0:
-        return sentiments[0].pos_score()
-    return 0
+def get_tags(x):
+    return indicoio.text_tags(x)
 
 
-def get_negative_score(sentiments):
-    if len(sentiments) > 0:
-        return sentiments[0].neg_score()
-    return 0
-
-
-def get_objective_score(sentiments):
-    if len(sentiments) > 0:
-        return sentiments[0].obj_score()
-    return 0
-
+print(subreddit)
 
 query_string = 'SELECT author, body, subreddit, score, created_utc, edited from May2015 where LENGTH(body) > 0 and author is not "[deleted]"'
 if subreddit != "":
@@ -79,7 +66,6 @@ elif group_u:
 query_string += ' LIMIT"' + str(lim) + '"'
 query_string += ' COLLATE NOCASE'
 
-print(query_string)
 
 df = pd.read_sql(
     query_string,
@@ -89,29 +75,23 @@ df = pd.read_sql(
 # for row in df:
 #   print(row[0], row[1], row[2], "\n")
 
-keywords = ['Positive', 'Negative', 'Objective', 'Indicoio', 'Diff']
+keywords = ['Positive', 'Tags']
 
 content_summary = pd.DataFrame()
 
 pos_content = []
-neg_content = []
-obj_content = []
+tags_content = []
 
 # get the average score for all words in the comments
 for string in df['body'].values:
-    strings = string.split(" ")
-    string_scores = list(map(lambda x: get_scores(x), strings))
-    pos_scores = list(map(lambda x: get_positive_score(x), string_scores))
-    neg_scores = list(map(lambda x: get_negative_score(x), string_scores))
-    obj_scores = list(map(lambda x: get_objective_score(x), string_scores))
+    pos = get_sent(string)
+    tags = get_tags(string)
 
-    pos_content.append(np.mean(pos_scores))
-    neg_content.append(np.mean(neg_scores))
-    obj_content.append(np.mean(obj_scores))
+    pos_content.append(pos)
+    tags_content.append(tags)
 
 df['Positive'] = pos_content
-df['Negative'] = neg_content
-df['Objective'] = obj_content
+df['Tags'] = tags_content
 
 print(df)
 
