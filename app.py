@@ -22,9 +22,8 @@ def hello():
 	form = HelloForm(request.form)
 	if request.method == 'POST' and form.validate():
 		name = request.form['sayhello']
-		chart = ehwakte
 		result = indicoio.sentiment(name)
-		return render_template('hello.html', name=result, bar=chart)
+		return render_template('hello.html', name=result)
 	return render_template('index.html', form=form)
 
 if __name__ == '__main__':
