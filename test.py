@@ -7,54 +7,76 @@ from nltk.corpus import sentiwordnet as swn
 import numpy as np
 import sys, getopt
 
-print('Number of arguments:', len(sys.argv), 'arguments.')
-print('Argument List:', str(sys.argv))
-
 subreddit = ""
-user = ""
+author = ""
 lim = 100
+group_s = 0
+group_u = 0
 
 i = 1
-while (i+1 < len(sys.argv)):
-    if sys.argv[i] == '-s':
-        subreddit = sys.argv[i + 1]
-        i = i + 1
-    elif sys.argv[i] == '-u':
-        user = sys.argv[i + 1]
-        i = i + 1
-    elif sys.argv[i] == '-l':
-	    lim = sys.argv[i + 1]
-    else:
+while (i < len(sys.argv)):
+
+    if sys.argv[i] == '-gs':
+        group_s = 1
+    elif sys.argv[i] == '-gu':
+        group_u = 1
+    elif (sys.argv[i] == '-help' or sys.argv[i] == 'help'):
+        print("python test.py -s <subreddit> -u <author> -l <limit> -gs -gu")
+        sys.exit(0)
+
+    elif i+1 < len(sys.argv):
+        if sys.argv[i] == '-s':
+            subreddit = sys.argv[i + 1]
+        elif sys.argv[i] == '-u':
+            author = sys.argv[i + 1]
+        elif sys.argv[i] == '-l':
+            lim = sys.argv[i + 1]
+        i = i + 2
         continue
 
-conn = sqlite3.connect('database.sqlite')
+    i = i + 1
+    continue
+
+conn = sqlite3.connect('../database.sqlite')
+
 
 def get_scores(x):
     return list(swn.senti_synsets(x))
+
 
 def get_positive_score(sentiments):
     if len(sentiments) > 0:
         return sentiments[0].pos_score()
     return 0
 
+
 def get_negative_score(sentiments):
     if len(sentiments) > 0:
         return sentiments[0].neg_score()
     return 0
-    
+
+
 def get_objective_score(sentiments):
     if len(sentiments) > 0:
         return sentiments[0].obj_score()
     return 0
 
+
 print(subreddit)
 
 query_string = 'SELECT score, body, subreddit from May2015 where LENGTH(body) > 0'
 if subreddit != "":
-    query_string += ' and subreddit = "'+subreddit+'"'
+    query_string += ' and subreddit = "' + subreddit + '"'
 
-if user != "":
-    query_string += ' and user = "' + user + '"'
+if author != "":
+    query_string += ' and author = "' + author + '"'
+
+if group_s:
+    query_string += ' group by subreddit'
+    if (group_s and group_u):
+        query_string += ' and author'
+elif group_u:
+    query_string += ' group by author'
 
 query_string += ' LIMIT"' + str(lim) + '"'
 query_string += ' COLLATE NOCASE'
@@ -66,10 +88,10 @@ df = pd.read_sql(
     conn
 )
 
-#for row in df:
+# for row in df:
 #   print(row[0], row[1], row[2], "\n")
 
-keywords = ['Positive', 'Negative', 'Objective', 'Subjective']
+keywords = ['Positive', 'Negative', 'Objective']
 
 content_summary = pd.DataFrame()
 
