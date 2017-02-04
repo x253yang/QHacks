@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Run With the Right Crowd</title>
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link href="{{ url_for('static', filename='css/normalize.css') }}" rel="stylesheet">
+		<link href='http://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
+		<!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+	</head>
+	<body>
+
+<body id="home">
+<div id="large-header" class="large-header">
+					<canvas id="demo-canvas"></canvas>
+</div>
+<div id="Content" class="wrapper">
+<div class="top-wrapper">
+<div id="header">
+<div class="wrapper">
+	<h1><a href="#" class="logo">anim</a></h1>
+	</div>
+</div>
+<div class="countdown styled"></div>
+
+</div>
+<div class="bottom-wrapper">
+<h2 class="intro">Our Team have been working on something Amazing <br/>We will be back soon.</h2>
+{% from "_formhelpers.html" import render_field %}
+<div>What's your name?</div>
+<form method=post action="/hello">
+	<dl>
+		{{ render_field(form.sayhello) }}
+	</dl>
+	<input type=submit value='Say Hello' name='submit_btn'>
+</form>
+	<div id="socialIcons">
+		<ul>
+			<li><a href="" title="Twitter" class="twitterIcon"></a></li>
+			<li><a href="" title="facebook" class="facebookIcon"></a></li>
+			<li><a href="" title="linkedIn" class="linkedInIcon"></a></li>
+			<li><a href="" title="Pintrest" class="pintrestIcon"></a></li>
+		</ul>
+	</div>
+</div>
+</div>
+</div>
+<script src="{{url_for('static', filename='js/TweenLite.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/EasePack.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/rAF.js')}}"></script>
+<script src="{{url_for('static', filename='js/demo-1.js')}}"></script>
+<script src="{{url_for('static', filename='js/jquery-1.9.1.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/Backstretch.js')}}"></script>
+<script src="{{url_for('static', filename='js/jquery.countdown.js')}}"></script>
+<script src="{{url_for('static', filename='js/global.js')}}"></script>
+
+
+	</body>
+</html>
