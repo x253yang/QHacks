@@ -8,7 +8,9 @@ test.py: sentiment analysis with sentiwordnet
 
 data.py: sentiment and tag analysis with indicoio
 
-Both test.py and data.py use the commandline: python test.py -s <subreddit> -u <author> -l <limit> -gs -gu
+test.py command line arguments: python test.py -s <subreddit> -u <author> -l <limit> -gs -gu 
+
+data.py command line arguments: python data.py -s <subreddit> -u <author> -l <limit> -gs -gu -t <tag> -t <tag> ...
 
 -s: subreddit
 
@@ -20,9 +22,15 @@ Both test.py and data.py use the commandline: python test.py -s <subreddit> -u <
 
 -gu: group by user/author
 
+-t: select tags to view (data.py only)
+
 For test.py and data.py, inputs are invalid if they contain a non-alphanumeric character other than '-' and '_'
 
 
 Running Flask app
 Open up repo:
 python app.py 
+
+---
+
+pygalTest.py: plots graph using pygal - graphing.html shows how to embed the graph

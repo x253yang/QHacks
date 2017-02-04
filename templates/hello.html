@@ -5,8 +5,13 @@
 	<link rel="stylesheet" href="{{ url_for('static',
 		filename='style.css') }}">
 </head>
+<body class="body">
+	  <div class="container graph1"  style="height: 20%" align="left">
+			<embed type="image/svg+xml" src={{emotion_graph|safe}} style='max-width:500px'/>
+	  </div>
 
-<body>
-	<div>Hello {{ name }}</div>
+		<class class="container" align="right">
+			<p style="">Positivity Percent: {{ result*100 }} %</p>
+		</div>
 </body>
 </html>
