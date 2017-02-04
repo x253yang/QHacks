@@ -13,6 +13,8 @@ author = ""
 lim = 100
 group_s = 0
 group_u = 0
+tag_list = []
+tag_length = 0
 
 i = 1
 while (i < len(sys.argv)):
@@ -21,7 +23,7 @@ while (i < len(sys.argv)):
         group_s = 1
     elif sys.argv[i] == '-gu':
         group_u = 1
-    elif (sys.argv[i] == '-help' or sys.argv[i] == 'help'):
+    elif (sys.argv[i] == '-help'):
         print("python test.py -s <subreddit> -u <author> -l <limit> -gs -gu")
         sys.exit(0)
 
@@ -32,6 +34,9 @@ while (i < len(sys.argv)):
             author = sys.argv[i + 1]
         elif sys.argv[i] == '-l':
             lim = sys.argv[i + 1]
+        elif sys.argv[i] == '-t':
+            tag_list.insert(tag_length,sys.argv[i + 1])
+            tag_length += 1
         i = i + 2
         continue
 
@@ -46,8 +51,6 @@ def get_sent(x):
 def get_tags(x):
     return indicoio.text_tags(x)
 
-
-print(subreddit)
 
 query_string = 'SELECT author, body, subreddit, score, created_utc, edited from May2015 where LENGTH(body) > 0 and author is not "[deleted]"'
 if subreddit != "":
@@ -86,9 +89,12 @@ tags_content = []
 for string in df['body'].values:
     pos = get_sent(string)
     tags = get_tags(string)
+    if tag_list != []:
+        tags = dict((key,value) for key, value in tags.items() if key in tag_list)
 
     pos_content.append(pos)
     tags_content.append(tags)
+
 
 df['Positive'] = pos_content
 df['Tags'] = tags_content
