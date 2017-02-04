@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from nltk.corpus import sentiwordnet as swn
 import numpy as np
 import sys, getopt
+import indicoio
+indicoio.config.api_key = 'db91e10ba18babcf6e5e5209a5f0ab6f'
 
 subreddit = ""
 author = ""
@@ -43,6 +45,8 @@ conn = sqlite3.connect('../database.sqlite')
 def get_scores(x):
     return list(swn.senti_synsets(x))
 
+def get_sent(x):
+    return indicoio.sentiment(x)
 
 def get_positive_score(sentiments):
     if len(sentiments) > 0:
@@ -64,7 +68,7 @@ def get_objective_score(sentiments):
 
 print(subreddit)
 
-query_string = 'SELECT score, body, subreddit from May2015 where LENGTH(body) > 0'
+query_string = 'SELECT author, body, subreddit, score, created_utc, edited from May2015 where LENGTH(body) > 0 and author is not "[deleted]"'
 if subreddit != "":
     query_string += ' and subreddit = "' + subreddit + '"'
 
@@ -91,13 +95,15 @@ df = pd.read_sql(
 # for row in df:
 #   print(row[0], row[1], row[2], "\n")
 
-keywords = ['Positive', 'Negative', 'Objective']
+keywords = ['Positive', 'Negative', 'Objective', 'Indicoio', 'Diff']
 
 content_summary = pd.DataFrame()
 
 pos_content = []
 neg_content = []
 obj_content = []
+ind_content = []
+diff_content = []
 
 # get the average score for all words in the comments
 for string in df['body'].values:
@@ -106,14 +112,20 @@ for string in df['body'].values:
     pos_scores = list(map(lambda x: get_positive_score(x), string_scores))
     neg_scores = list(map(lambda x: get_negative_score(x), string_scores))
     obj_scores = list(map(lambda x: get_objective_score(x), string_scores))
+    ind_scores = get_sent(string)
+    diff = list(map(lambda x: ind_scores - x, pos_scores))
 
     pos_content.append(np.mean(pos_scores))
     neg_content.append(np.mean(neg_scores))
     obj_content.append(np.mean(obj_scores))
+    ind_content.append(np.mean(ind_scores))
+    diff_content.append(np.mean(diff))
 
 df['Positive'] = pos_content
 df['Negative'] = neg_content
 df['Objective'] = obj_content
+df['Indicoio'] = ind_content
+df['Diff'] = diff_content
 
 print(df)
 
