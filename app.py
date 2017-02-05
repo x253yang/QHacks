@@ -12,7 +12,7 @@ from sklearn.ensemble import RandomForestClassifier
 import indicoio
 import json
 import pygal
-from pygal.style import DarkColorizedStyle
+from pygal.style import DarkStyle
 
 indicoio.config.api_key = 'c938b911dce99664a3af0f077ad2edc6'
 
@@ -64,7 +64,7 @@ def trainForestModel(train_data_features, trainValue):
 
 
 #importing training data
-train = pd.read_csv("backup2.csv")
+train = pd.read_csv("subreddits.csv")
 vectorizer = CountVectorizer(analyzer="word", tokenizer = None, preprocessor= None, stop_words = None, max_features = 5000)
 
 num_reviews = train["body"].size
@@ -121,46 +121,65 @@ def index():
 	form = HelloForm(request.form)
 	return render_template('index.html', form=form)
 
-'''@app.route('/hello', methods=['POST'])
-def hello():
+@app.route('/hello', methods=['POST'])
+def results():
 	form = HelloForm(request.form)
 	if request.method == 'POST' and form.validate():
 		name = request.form['sayhello']
-		result = indicoio.sentiment(name)
-		resultEmotion = indicoio.emotion(name);
-		#resultTwitter = indicoio.twitter_engagment(name);
-		resultPersona = indicoio.personas(name);
-		resultPersonality = indicoio.personality(name);
+		sentimentResult = indicoio.sentiment(name)
+		resultEmotion = indicoio.emotion(name)
+		resultTwitter = indicoio.twitter_engagement(name)
+		resultPersona = indicoio.personas(name)
+		resultPersonality = indicoio.personality(name)
 		score = getScore(name)
 		subredditRec = getSubRedditRec(name)
-		print(score)
-		print(subredditRec)
+
 		#Creating chart of emotions
-		pie_chart = pygal.Pie(inner_radius=.4, style=DarkColorizedStyle)
-		pie_chart.title = ''
-		pie_chart.add('Anger', resultEmotion['anger']*100)
-		pie_chart.add('Surprise', resultEmotion['surprise']*100)
-		pie_chart.add('Sadness', resultEmotion['sadness']*100)
-		pie_chart.add('Fear', resultEmotion['fear']*100)
-		pie_chart.add('Happiness', resultEmotion['joy']*100)
-		graph_data = pie_chart.render_data_uri()
-		return render_template('hello.html', result=result, emotion_graph=graph_data, score=score[0], subred=subredditRec[0])
+		radar_chart = pygal.Radar(style=DarkStyle)
+		radar_chart.add('Anger', resultEmotion['anger']*100)
+		radar_chart.add('Surprise', resultEmotion['surprise']*100)
+		radar_chart.add('Sadness', resultEmotion['sadness']*100)
+		radar_chart.add('Fear', resultEmotion['fear']*100)
+		radar_chart.add('Happiness', resultEmotion['joy']*100)
+		graph_data = radar_chart.render_data_uri()
+
+		#Creating personality
+		pie_chart = pygal.Pie(inner_radius=.4, style=DarkStyle)
+		pie_chart.add('extraversion', resultPersonality['extraversion']*100)
+		pie_chart.add('openness', resultPersonality['openness']*100)
+		pie_chart.add('agreeableness', resultPersonality['agreeableness']*100)
+		pie_chart.add('conscientiousness', resultPersonality['conscientiousness']*100)
+		pie_chart= pie_chart.render_data_uri()
+		#Creating personas
+
+		#sentiment
+		line_chart = pygal.HorizontalBar(style=DarkStyle)
+		line_chart.add('Sentiment Of Your Post', sentimentResult*100)
+		line_chart.add('Sentiment Of Reddit (Avg)',  45)
+		line_chart = line_chart.render_data_uri()
+
+		#Personas chart
+		persona_chart = pygal.Pie(inner_radius=.75, style=DarkStyle)
+		persona_chart.add('Advocate', resultPersona['advocate']*100)
+		persona_chart.add('Mediator', resultPersona['mediator']*100)
+		persona_chart.add('Consul', resultPersona['consul']*100)
+		persona_chart.add('Architect', resultPersona['architect']*100)
+		persona_chart.add('Logician', resultPersona['logician']*100)
+		persona_chart.add('Commander', resultPersona['commander']*100)
+		persona_chart.add('Debater', resultPersona['debater']*100)
+		persona_chart.add('Protagonist', resultPersona['protagonist']*100)
+		persona_chart.add('Campaigner', resultPersona['campaigner']*100)
+		persona_chart.add('Logisitican', resultPersona['logistician']*100)
+		persona_chart.add('Defender', resultPersona['defender']*100)
+		persona_chart.add('Executive', resultPersona['executive']*100)
+		persona_chart.add('Consul', resultPersona['consul']*100)
+		persona_chart.add('Adventurer', resultPersona['adventurer']*100)
+		persona_chart.add('Entrepreneur', resultPersona['entrepreneur']*100)
+		persona_chart = persona_chart.render_data_uri()
+
+		return render_template('dashboard.html', twitter=resultTwitter*100, graph_data=graph_data, sentiment_chart=line_chart, personas_chart=persona_chart, pie_chart=pie_chart, score=score[0], subred=subredditRec[0], post=name)
 		#Need to render this somehow...
-	return render_template('index.html', form=form)'''
-
-@app.route('/dashboard', methods=['GET'])
-def pygalexample():
-	graph = pygal.Line()
-	graph.title = '% Change Coolness of programming languages over time.'
-	graph.x_labels = ['2011','2012','2013','2014','2015','2016']
-	graph.add('Python',  [15, 31, 89, 200, 356, 900])
-	graph.add('Java',    [15, 45, 76, 80,  91,  95])
-	graph.add('C++',     [5,  51, 54, 102, 150, 201])
-	graph.add('All others combined!',  [5, 15, 21, 55, 92, 105])
-	graph_data = graph.render_data_uri()
-	return render_template("dashboard.html", graph_data = graph_data)
-
-
+	return render_template('index.html', form=form)
 
 if __name__ == '__main__':
 	app.run(debug=True)
