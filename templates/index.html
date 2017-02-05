@@ -8,6 +8,15 @@
 		<link rel="shortcut icon" href="../favicon.ico">
 		<link href="{{ url_for('static', filename='css/normalize.css') }}" rel="stylesheet">
 		<link href='http://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<!--[if IE]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
@@ -15,41 +24,77 @@
 	</head>
 	<body>
 
-<body id="home">
-<div id="large-header" class="large-header">
-					<canvas id="demo-canvas"></canvas>
-</div>
-<div id="Content" class="wrapper">
-<div class="top-wrapper">
-<div id="header">
-<div class="wrapper">
-	<h1><a href="#" class="logo">anim</a></h1>
+	<body id="home">
+  <div id="large-header" class="large-header">
+	  <canvas id="demo-canvas"></canvas>
+  </div>
+  <div id="Content" class="wrapper">
+    <div class="top-wrapper">
+      <div id="header">
+        <div class="wrapper">
+	  <h1>Run With the Right Crowd</h1>
 	</div>
-</div>
-<div class="countdown styled"></div>
+      </div>
+    </div>
 
-</div>
-<div class="bottom-wrapper">
-<h2 class="intro">Our Team have been working on something Amazing <br/>We will be back soon.</h2>
-{% from "_formhelpers.html" import render_field %}
-<div>What's your name?</div>
-<form method=post action="/hello">
+ <section id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Heading</h2>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary" style="color:purple;"></i>
+                        <i class="fa fa-wrench fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="subtitle">Subtitle</h4>
+                    <p class="text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary" style="color:purple;"></i>
+                        <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="subtitle">Subtitle</h4>
+                    <p class="text-muted">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary" style="color:purple;"></i>
+                        <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="subtitle">Subtitle</h4>
+                    <p class="text-muted">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                </div>
+                
+                
+                
+            </div>
+        </div>
+    </section>
+
+    <div class="bottom-wrapper" style="text-align:center;">
+    {% from "_formhelpers.html" import render_field %}
+        <form method=post action="/hello">
 	<dl>
-		{{ render_field(form.sayhello) }}
+  	  {{form.sayhello(class="postInput")}}
 	</dl>
-	<input type=submit value='Say Hello' name='submit_btn'>
-</form>
+	<input type=submit value='Enter Post' id="postButton" name='submit_btn'>
+        </form>
 	<div id="socialIcons">
-		<ul>
-			<li><a href="" title="Twitter" class="twitterIcon"></a></li>
-			<li><a href="" title="facebook" class="facebookIcon"></a></li>
-			<li><a href="" title="linkedIn" class="linkedInIcon"></a></li>
-			<li><a href="" title="Pintrest" class="pintrestIcon"></a></li>
-		</ul>
+	  <ul>
+	    <li><a href="" title="Twitter" class="twitterIcon"></a></li>
+	    <li><a href="" title="facebook" class="facebookIcon"></a></li>
+	    <li><a href="" title="linkedIn" class="linkedInIcon"></a></li>
+	    <li><a href="" title="Pintrest" class="pintrestIcon"></a></li>
+	  </ul>
 	</div>
-</div>
-</div>
-</div>
+      </div>
+    </div>
+  </div>
 <script src="{{url_for('static', filename='js/TweenLite.min.js')}}"></script>
 <script src="{{url_for('static', filename='js/EasePack.min.js')}}"></script>
 <script src="{{url_for('static', filename='js/rAF.js')}}"></script>
