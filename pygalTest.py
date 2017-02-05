@@ -17,7 +17,7 @@ def pygalexample():
 		graph.add('C++',     [5,  51, 54, 102, 150, 201])
 		graph.add('All others combined!',  [5, 15, 21, 55, 92, 105])
 		graph_data = graph.render_data_uri()
-		return render_template("graphing.html", graph_data = graph_data)
+		return render_template("dashboard.html", graph_data = graph_data)
 
 if __name__ == '__main__':
     port = 8000 #the custom port you want
