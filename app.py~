@@ -42,7 +42,7 @@ def hello():
 		#Need to render this somehow...
 	return render_template('index.html', form=form)'''
 
-@app.route('/dashboard', methods=['GET'])
+@app.route('/dashboard', methods=['POST'])
 def pygalexample():
 	graph = pygal.Line()
 	graph.title = '% Change Coolness of programming languages over time.'
