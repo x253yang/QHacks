@@ -25,6 +25,10 @@ def hello():
 		name = request.form['sayhello']
 		result = indicoio.sentiment(name)
 		resultEmotion = indicoio.emotion(name);
+		resultTwitter = indicio.twitter_engagment(name);
+		resultPersona = indicio.personas(name);
+		resultPersonality = indicio.personality(name);
+
 		#Creating chart of emotions
 		pie_chart = pygal.Pie(inner_radius=.4, style=DarkColorizedStyle)
 		pie_chart.title = ''
