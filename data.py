@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys, getopt
 import indicoio
+from sklearn.neighbors import KNeighborsClassifier
 indicoio.config.api_key = 'db91e10ba18babcf6e5e5209a5f0ab6f'
 
 subreddit = ""
@@ -15,6 +16,109 @@ group_s = 0
 group_u = 0
 tag_list = []
 tag_length = 0
+
+sub_list = '''
+'AskReddit',
+'leagueoflegends',
+'nba',
+'funny',
+'pics',
+'nfl',
+'pcmasterrace',
+'videos',
+'news',
+'todayilearned',
+'DestinyTheGame',
+'worldnews',
+'soccer',
+'DotA2',
+'AdviceAnimals',
+'WTF',
+'GlobalOffensive',
+'hockey',
+'movies',
+'SquaredCircle',
+'gaming',
+'fatpeoplehate',
+'relationships',
+'gifs',
+'politics',
+'CasualConversation',
+'explainlikeimfive',
+'anime',
+'GlobalOffensiveTrade',
+'witcher',
+'amiibo',
+'Fireteams',
+'electronic_cigarette',
+'asoiaf',
+'gameofthrones',
+'TumblrInAction',
+'trees',
+'Showerthoughts',
+'hearthstone',
+'IAmA',
+'Games',
+'Fitness',
+'newsokur',
+'gonewild',
+'aww',
+'tifu',
+'buildapc',
+'2007scape',
+'AskMen',
+'smashbros',
+'AskWomen',
+'technology',
+'thebutton',
+'atheism',
+'wow',
+'MMA',
+'KotakuInAction',
+'rupaulsdragrace',
+'CFB',
+'hiphopheads',
+'personalfinance',
+'unitedkingdom',
+'magicTCG',
+'Smite',
+'Android',
+'mildlyinteresting',
+'baseball',
+'SubredditDrama',
+'india',
+'PS4',
+'europe',
+'heroesofthestorm',
+'whowouldwin',
+'OkCupid',
+'TwoXChromosomes',
+'csgobetting',
+'Bitcoin',
+'Music',
+'ffxiv',
+'Christianity',
+'TrollXChromosomes',
+'xboxone',
+'EliteDangerous',
+'nottheonion',
+'FIFA',
+'television',
+'cars',
+'motorcycles',
+'science',
+'canada',
+'Random_Acts_Of_Amazon',
+'Guildwars2',
+'Eve',
+'ukpolitics',
+'survivor',
+'pokemontrades',
+'fivenightsatfreddys',
+'formula1',
+'conspiracy',
+'bloodborne'
+'''
 
 i = 1
 while (i < len(sys.argv)):
@@ -43,7 +147,7 @@ while (i < len(sys.argv)):
     i = i + 1
     continue
 
-conn = sqlite3.connect('../database.sqlite', timeout=100)
+conn = sqlite3.connect('../database.sqlite', timeout=60)
 
 def get_sent(x):
     return indicoio.sentiment(x)
@@ -63,7 +167,8 @@ def get_tags(x):
 
 
 query_string = '''
-SELECT * FROM (SELECT author, body, subreddit, score from May2015 where LENGTH(body) >= 30 and author is not "[deleted]"'''
+SELECT * FROM (SELECT id, author, body, subreddit, score from May2015
+where LENGTH(body) >= 30 and author is not "[deleted]"'''
 if subreddit != "":
     query_string += ' and subreddit = "' + subreddit + '"'
 
@@ -84,7 +189,8 @@ query_string += ' LIMIT"' + str(lim) + '")'
 query_string += ' UNION '
 
 query_string += '''
-SELECT * FROM (SELECT author, body, subreddit, score as "length" from May2015 where LENGTH(body) >= 30 and author is not "[deleted]"'''
+SELECT * FROM (SELECT id, author, body, subreddit, score
+from May2015 where LENGTH(body) >= 30 and author is not "[deleted]"'''
 if subreddit != "":
     query_string += ' and subreddit = "' + subreddit + '"'
 
@@ -149,6 +255,11 @@ df['Fear'] = fear_content
 df['Sadness'] = sadness_content
 df['Surprise'] = surprise_content
 
-print(df)
+log = open('./subreddits.csv', "a+")
+
+print("id,author,body,subreddit,score,anger,joy,fear,sadness,surprise", file=log)
+for row in df.iterrows():
+    print(row[1][0],row[1][1],row[1][2].replace(',' , '').replace('\n' , ''),row[1][3],row[1][4],row[1][5],row[1][6]
+          ,row[1][7],row[1][8],row[1][9], file=log, sep=',')
 
 conn.close()
