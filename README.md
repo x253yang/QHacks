@@ -1,7 +1,7 @@
 #Run With the Right Crowd
 QHacks 2017 Project
 
-![Alt text](Screen Shot 2017-02-05 at 9.34.44 AM.png "Screenshot")
+![Alt text](https://github.com/x253yang/QHacks/blob/master/Screen%20Shot%202017-02-05%20at%209.34.44%20AM.png?raw=true)
 ![Alt text](Screen Shot 2017-02-05 at 9.34.56 AM.png "Optional Title")
 
 
